@@ -1,0 +1,29 @@
+private boolean validaLogin2(String login, String password) {
+
+        Hashtable authEnv = new Hashtable(11);
+        String userName = login;
+        String passWord = password;
+        String base = "ou=People,dc=tecnova,dc=cl";
+        String dn = "uid=" + userName + "," + base;
+        String ldapURL = "ldap://ldap.tecnova.cl:389";
+
+        authEnv.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        authEnv.put(Context.PROVIDER_URL, ldapURL);
+        authEnv.put(Context.SECURITY_AUTHENTICATION, "simple");
+        authEnv.put(Context.SECURITY_PRINCIPAL, dn);
+        authEnv.put(Context.SECURITY_CREDENTIALS, passWord);
+
+        try {
+            DirContext authContext = new InitialDirContext(authEnv);
+            System.out.println("Authentication Success!");
+            return true;
+        } catch (AuthenticationException authEx) {
+            System.out.println("Authentication failed!");
+            authEx.printStackTrace();
+            return false;
+        } catch (NamingException namEx) {
+            System.out.println("Something went wrong!");
+            namEx.printStackTrace();
+            return false;
+        }
+    }
